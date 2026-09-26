@@ -1,0 +1,9 @@
+version,network,crossings,crossings_closed,areas,buildings,single_areas,single_buildings,residents_block,homes_block,single_residents_block,single_homes_block,unlocated_buildings,all_stranded_groups
+base/all,base,all,7940,1159,68155,296,10554,78327,34234,16054,6330,0,1778
+base/strict,base,strict,6943,970,57686,254,9673,64551,28259,14845,5966,0,1492
+base/fords,base,fords,3730,617,37525,193,7897,41348,18424,11010,4784,0,907
+plus/all,plus,all,7940,895,46061,253,7953,54806,23434,10640,4415,0,1104
+plus/strict,plus,strict,6943,739,37270,224,7646,43574,18490,10352,4405,0,903
+plus/fords,plus,fords,3730,499,24738,166,6346,27459,11912,7971,3477,0,592
+plus/strict + TIGER agrees,plus,strict,,230,25935,95,5931,32374,13664,7711,3559,0,
+CAREFUL SET: + TIGER agrees + no 20 m near-miss,plus,strict,,216,22469,90,5549,26257,11236,6825,3240,0,
