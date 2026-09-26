@@ -1,0 +1,18 @@
+{
+ "txgio_lwc": {
+  "url": "https://feature.geographic.texas.gov/arcgis/rest/services/Basemap/Low_Water_Crossing/MapServer/0/query",
+  "count_reported": 8339,
+  "count_downloaded": 8339,
+  "retrieved_utc": "2026-09-24T07:51:58Z",
+  "sha256": "302be1ede75aaeed998220f3e537ab0e3d97f84de8ff405b2aa37b7980c86698",
+  "example_query": "https://feature.geographic.texas.gov/arcgis/rest/services/Basemap/Low_Water_Crossing/MapServer/0/query?where=1%3D1&outFields=%2A&outSR=4326&orderByFields=objectid+ASC&resultOffset=8000&resultRecordCount=1000&f=geojson"
+ },
+ "twdb_sfp_lwc": {
+  "url": "https://gis2.twdb.texas.gov/server/rest/services/OOP_FP_SFPV/Existing_Flood_Risk_Map/FeatureServer/5/query",
+  "count_reported": 9322,
+  "count_downloaded": 9322,
+  "retrieved_utc": "2026-09-24T07:52:38Z",
+  "sha256": "283ae32b42988afcc39da9357fa257cd276f469316875bee31531c74ac966af1",
+  "example_query": "https://gis2.twdb.texas.gov/server/rest/services/OOP_FP_SFPV/Existing_Flood_Risk_Map/FeatureServer/5/query?where=1%3D1&outFields=%2A&outSR=4326&orderByFields=OBJECTID+ASC&resultOffset=9000&resultRecordCount=1000&f=geojson"
+ }
+}
