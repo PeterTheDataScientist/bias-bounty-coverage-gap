@@ -6,7 +6,7 @@ Author: Peter Tinashe Mundowa (Zindi: PeterTheAnalyst).
 ## One writeup, two parts
 
 The challenge judges both special prizes from the methodology writeup, so my entry is one post in two parts (post:
-[WRITEUP_THREAD_URL]). [WRITEUP.md](WRITEUP.md) is that post with its tables rendered, followed by the appendices
+[thread 35033](https://zindi.world/competitions/bias-bounty-mapping-equity-challenge/discussions/35033)). [WRITEUP.md](WRITEUP.md) is that post with its tables rendered, followed by the appendices
 Part 1 points to.
 
 **Part 1, methodology (Best Documentation): how my scored column is built** (code: [documentation/](documentation/)).
@@ -168,7 +168,7 @@ The inventories and the OSM tags change over time, so the files the entry's run 
 
 Mundowa, P. T. (2026). Methodology writeup with a Best Bias Discovery section: exact coverage-gap reconstruction, and
 Texas low-water crossings the open map carries as ordinary roads. Bias Bounty Mapping Equity Challenge, Zindi.
-[WRITEUP_THREAD_URL]
+https://zindi.world/competitions/bias-bounty-mapping-equity-challenge/discussions/35033
 
 ## Contact
 

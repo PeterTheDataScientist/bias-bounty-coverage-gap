@@ -1,8 +1,8 @@
 # Methodology writeup with a Best Bias Discovery section: exact coverage-gap reconstruction, and Texas low-water crossings the open map carries as ordinary roads
 
-This is my writeup as posted on the challenge's discussion board: one post in two parts, Part 1 the methodology (Best Documentation) and Part 2 the Best Bias Discovery section, with the tables rendered. The appendices Part 1 points to follow the post.
+This is my writeup as posted on the challenge's discussion board ([thread 35033](https://zindi.world/competitions/bias-bounty-mapping-equity-challenge/discussions/35033)): one post in two parts, Part 1 the methodology (Best Documentation) and Part 2 the Best Bias Discovery section, with the tables rendered. The appendices Part 1 points to follow the post.
 
-I am Zindi user PeterTheAnalyst. This post is my methodology writeup for the challenge and my entry for both special prizes. Part 1 is the methodology, for Best Documentation, and Part 2 is the clearly labelled Best Bias Discovery section. Code, result tables and figures for both parts: https://github.com/PeterTheDataScientist/bias-bounty-coverage-gap.
+I am Zindi user PeterTheAnalyst. This post is my methodology writeup for the challenge and my entry for both special prizes. Part 1 is the methodology, for Best Documentation, and Part 2 is the clearly labelled Best Bias Discovery section. Code, result tables and figures for both parts are in my public repository: https://github.com/PeterTheDataScientist/bias-bounty-coverage-gap
 
 Part 1, methodology: the pipeline behind my scored column, one Python file, with the prize's edge cases and 29 alternative conventions and weightings, each measured. With the standard pyproj wheel its output scores a public error of 0.00000301; with PROJ compiled for fused multiply-add it scores exactly 0.
 
@@ -23,8 +23,8 @@ Part 2, Best Bias Discovery: Overture has the road at 93.1% of the 8,454 officia
 - **What it is:** the pipeline behind my scored column, one Python file, with the prize's edge cases and 29 alternative conventions and weightings, each measured. My Best Bias Discovery entry, on Texas low-water crossings, is Part 2 of this post.
 - **Score:** public error 0.00000301 with the standard pyproj wheel (1S1Ei46w, my scored column); exactly 0 with PROJ compiled for fused multiply-add (RkEkksFb). Challenge data only; no model, seed, manual step or score file.
 - **To reproduce:** python pipeline.py --check --data-dir FOLDER, under 4 minutes on 2 cores and 8 GB, every input checked against a published sha256 (four input layers left the bucket on 25 September: see the note below).
-- **New here, as far as I can find after reading every writeup thread:** the reference's arithmetic on an ordinary Intel or AMD machine, by compiling PROJ with -mfma, with a control build matching the pyproj wheel bit for bit and a one-point test of which arithmetic you have; and the scorecard's ratios under every variant, from saved per-tract counts.
-- **Credit:** the plateau's cause is wangwu's (thread 34972); the metric reading and exclusion rule are Yanard's (thread 34908); other ideas are credited where used and in section 11.
+- **New here, as far as I can find after reading every writeup thread:** the reference's arithmetic natively on an ordinary Intel or AMD machine, by compiling PROJ with -mfma, with no emulation, a control build matching the pyproj wheel bit for bit and a one-point test of which arithmetic you have (Yanard, thread 35029, posted on 26 September, reaches the same exact 0 another way, by running arm64 DuckDB under emulation); and the scorecard's ratios under every variant, from saved per-tract counts.
+- **Credit:** the plateau's cause is wangwu's (thread 34972); the metric reading and exclusion rule are Yanard's (thread 34908, now 35029); other ideas are credited where used and in section 11.
 
 ### Where the prize text is answered
 
@@ -127,7 +127,7 @@ Each line changes one convention and recomputes all 9,379 values. "out": the mea
 | Roads | TIGER byte-identical geometries kept once * | 1,283 | 0.00573 | 0.230 | out |
 | Roads | TIGER repeated LINEARID and geometry once * | 73 | 0.000124 | 0.120 | out |
 | Roads | Source CRS named EPSG:4326, not OGC:CRS84 * | 0 | 0 | 0 | same |
-| Roads | DuckDB spatial instead of GEOS for the split + | 0 | under 1e-16 |  | same |
+| Roads | DuckDB spatial instead of GEOS for the split + | 0 | under 1e-16 | 3.1e-16 | same |
 | Buildings | Centre of the covering bbox, not the true centroid | 48 | 0.00000078 | 0.00139 | board (b) |
 | Buildings | Point on surface, not the true centroid * | 92 | 0.0000013 | 0.00102 | exact 0 (c) |
 | Buildings | Every footprint touching the tract | 593 | 0.0000441 | 0.340 | out |
@@ -178,7 +178,7 @@ With no score file: the scored tract counts (591, 1,192, 1,593, 6,003) and tract
 
 The acceptance window. Read as the reference's column means over all 9,379 tracts, rounded to 6 decimals, with undefined components as 0, the four constants in the Data page's SampleSubmission.csv confine each column sum of a correct file to a window 0.0094 wide (built up by malekarkan, Yanard and Pricilegangbe). My scored file's building and POI sums fall inside; its transport sum is 0.0073 above and its composite 0.0050 above, which puts the residual in the roads. Rounding matters: under truncation even the building sum would fall outside.
 
-The residual. Rounding to 6 decimals took my score from 0.000003874 to 0.000003732, a gain almost equal to the mean rounding change (0.000000142 against 0.000000145), so nearly every tract already matched. On 23 September wangwu (thread 34972) traced the rest to floating-point arithmetic and reproduced the reference on arm64: highways that share their lines with tract boundaries land about 0.00000000001 m inside or outside a tract after projection, depending on the last bit, and compilers fuse a multiply and an add into one rounding by default for ARM processors but not in the usual Intel and AMD builds. I checked it without an ARM machine by compiling PROJ 9.5.1 twice under pyproj 3.7.2. With fused multiply-add off, the build matches the pyproj wheel exactly (2,000,000 test points, every tract's road length); with it on (-mfma), 21 composites change, 19 in Texas and, in my build, 2 in Carter County, Oklahoma, and the file scored exactly 0, with GEOS still the ordinary x86 wheel. Its transport column sums to 1048.2997252134437, the figure chizzydev250 (thread 35012) reports from DuckDB on Linux arm64.
+The residual. Rounding to 6 decimals took my score from 0.000003874 to 0.000003732, a gain almost equal to the mean rounding change (0.000000142 against 0.000000145), so nearly every tract already matched. On 23 September wangwu (thread 34972) traced the rest to floating-point arithmetic and reproduced the reference on arm64: highways that share their lines with tract boundaries land about 0.00000000001 m inside or outside a tract after projection, depending on the last bit, and compilers fuse a multiply and an add into one rounding by default for ARM processors but not in the usual Intel and AMD builds. I checked it without an ARM machine by compiling PROJ 9.5.1 twice under pyproj 3.7.2. With fused multiply-add off, the build matches the pyproj wheel exactly (2,000,000 test points, every tract's road length); with it on (-mfma), 21 composites change, 19 in Texas and, in my build, 2 in Carter County, Oklahoma, and the file scored exactly 0, with GEOS still the ordinary x86 wheel. Its transport column sums to 1048.2997252134437, the figure chizzydev250 (thread 35012) reports from DuckDB on Linux arm64, and Yanard (thread 35029) from arm64 DuckDB under emulation.
 
 The metric and the file. An all-zeros file scored 0.059806101, near my column's mean (0.058437), not its root mean square (0.106164), and the tertiary and ramps variants scored within 4 percent of their mean absolute change: mean absolute error fits. A five-column file with transport_gap zeroed scored the same, so the board reads the second column (as thibaudlepan found); I submit two columns, every row filled.
 
@@ -207,7 +207,7 @@ Code: https://github.com/PeterTheDataScientist/bias-bounty-coverage-gap , folder
 
 ### 11. Credits
 
-Published by other entrants before this post and used here, in date order: malekarkan (34703, the sample constant); Colossius97130 (34713, a SHA-256 rebuild); de-coder (34744, TIGER duplicates); thibaudlepan (34844, undefined shares, the second column, the uncapped reversal); Thelightthatshines (34847, zero-population and no-land tracts, README-count tests); Ajitv (34901, the lossy join); ALDFX-ML (34903, geography); Yanard (34908, the metric reading, the magnitude rule, intervals from the constants); Luca925 (34925, facilities on boundaries, the CRS84 shift); NickyGuants (34962, board scores for duplicates and boundary places); wangwu (34972, the fused multiply-add cause); TlT (34980, the checklist); Pricilegangbe (34992, sum windows, repeated TIGER records); PIO (35000, ratios with roads rebuilt); chizzydev250 (35012, the arm64 sum).
+Published by other entrants before this post and used here, in date order: malekarkan (34703, the sample constant); Colossius97130 (34713, a SHA-256 rebuild); de-coder (34744, TIGER duplicates); thibaudlepan (34844, undefined shares, the second column, the uncapped reversal); Thelightthatshines (34847, zero-population and no-land tracts, README-count tests); Ajitv (34901, the lossy join); ALDFX-ML (34903, geography); Yanard (34908, now 35029, the metric reading, the magnitude rule, intervals from the constants); Luca925 (34925, facilities on boundaries, the CRS84 shift); NickyGuants (34962, board scores for duplicates and boundary places); wangwu (34972, the fused multiply-add cause); TlT (34980, the checklist); Pricilegangbe (34992, sum windows, repeated TIGER records); PIO (35000, ratios with roads rebuilt); chizzydev250 (35012, the arm64 sum).
 
 ## Part 2: Best Bias Discovery
 
@@ -242,7 +242,7 @@ To put this in the challenge's own terms, I applied its gap formula to the attri
 D2.1 Sources, with retrieval dates (UTC)
 
 - Texas Geographic Information Office (TxGIO) Low Water Crossing inventory, 8,339 points: https://feature.geographic.texas.gov/arcgis/rest/services/Basemap/Low_Water_Crossing/MapServer/0 (retrieved 24 Sep 2026 07:51).
-- Texas Water Development Board (TWDB) State Flood Plan layer "Low Water Crossing", 9,322 points compiled by the regional flood planning groups: https://gis2.twdb.texas.gov/server/rest/services/OOP_FP_SFPV/Existing_Flood_Risk_Map/FeatureServer/5 (retrieved 24 Sep 2026 07:52). Both are TWDB-family publications, and the TWDB site policy reads: "The Texas Water Development Board freely grants permission to copy and distribute its materials." (https://www.twdb.texas.gov/policies/site/, read 26 Sep 2026).
+- Texas Water Development Board (TWDB) State Flood Plan layer "Low Water Crossing", 9,322 points compiled by the regional flood planning groups: https://gis2.twdb.texas.gov/server/rest/services/OOP_FP_SFPV/Existing_Flood_Risk_Map/FeatureServer/5 (retrieved 24 Sep 2026 07:52). Both are TWDB-family publications, and the TWDB site policy at https://www.twdb.texas.gov/policies/site/ (read 26 Sep 2026) says: "The Texas Water Development Board freely grants permission to copy and distribute its materials."
 - Overture Maps release 2026-08-19.0 (ODbL): the challenge's own south-central-tx roads file, plus, for one check, the service and track classes that file leaves out (s3://overturemaps-us-west-2/release/2026-08-19.0/theme=transportation/type=segment/, read 24 Sep 2026). Road flag values from the Overture schema, https://github.com/OvertureMaps/schema/blob/main/schema/transportation/segment.yaml (read 26 Sep 2026).
 - OpenStreetMap Texas extract (ODbL), replication timestamp 23 Sep 2026 00:03 UTC, sequence 7298377, from the openstreetmap.fr mirror: https://download.openstreetmap.fr/extracts/north-america/us-south/texas.osm.pbf (downloaded 24 Sep 2026).
 - Census 2020 block counts of residents and homes, https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10 (queried at run time; last run 26 Sep 2026; public domain).
@@ -326,6 +326,8 @@ Data sources, each with its URL: Part 1, section 3 and the note on the four laye
 ## Updates
 
 Anything I change after posting is listed here with its date.
+
+- 26 Sep 2026: two links in the post now open correctly (a full stop and a comma after them had been read as part of the link); nothing else changed.
 
 ## Appendices to Part 1
 
