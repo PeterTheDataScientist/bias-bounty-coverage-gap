@@ -1,0 +1,12 @@
+# Low-water-crossing discovery, pinned to the versions that produced every number in the entry (Python 3.11).
+duckdb==1.5.5
+geopandas==1.1.4
+matplotlib==3.10.9
+numpy==2.4.4
+osmium==4.3.1
+pandas==3.0.2
+pillow==12.2.0
+pyarrow==25.0.1
+pyproj==3.7.2
+scipy==1.17.1
+shapely==2.1.2
