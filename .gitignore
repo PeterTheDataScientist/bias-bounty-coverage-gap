@@ -1,0 +1,31 @@
+# Challenge data, downloads and caches: never committed (the scripts download them)
+cache/
+data/
+raw/
+*.parquet
+*.pbf
+*.gpkg
+
+# Outputs of a run
+out/
+out_fma/
+work/
+figs/
+figs_img/
+figs_audit/
+proj_fma/
+proj_nofma/
+submission*.csv
+
+# Python and editors
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.DS_Store
+
+# Local configuration, never committed
+.env
+.env.*
+kaggle.json
